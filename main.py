@@ -6,10 +6,20 @@ Pipeline: fetch headlines -> write a script -> turn it into a voice -> make card
 import os
 import re
 import html
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 import feedparser
+from zoneinfo import ZoneInfo
 
 os.makedirs("output", exist_ok=True)
+
+# When running on a schedule, only proceed at 07:00 Stockholm time.
+# (GitHub fires two crons to cover summer/winter; this lets one through.)
+if os.environ.get("GITHUB_ACTIONS") == "true":
+    hour = datetime.now(ZoneInfo("Europe/Stockholm")).hour
+    if hour != 7:
+        print(f"Stockholm time is {hour}:00, not 07:00 — skipping.")
+        raise SystemExit(0)
+    
 
 # ========================================
 # Fetch fresh AI headlines from RSS feeds
@@ -95,8 +105,48 @@ async def make_voice(text, path):
     communicate = edge_tts.Communicate(text, "en-US-JennyNeural", pitch="+8Hz") 
     await communicate.save(path)
 
-asyncio.run(make_voice(script, "output/news_podcast.mp3"))
-print("\nSaved output/news_podcast.mp3")
+asyncio.run(make_voice(script, "output/podcast.mp3"))
+print("\nSaved output/podcast.mp3")
+
+
+
+# ========================================
+# Build the podcast feed (podcast.xml)
+# ========================================
+from email.utils import format_datetime
+
+# Your public GitHub Pages address (note the trailing slash)
+SITE_URL = "https://emmabertmar.github.io/ai-news-brief/"
+
+def build_feed(audio_filename, title):
+    now = datetime.now(timezone.utc)
+    pub_date = format_datetime(now)         # podcast dates need this exact format
+    audio_url = SITE_URL + audio_filename   # full public link to the mp3
+
+    feed = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>My AI Daily Brief</title>
+    <link>{SITE_URL}</link>
+    <description>A daily 4-minute briefing on the latest AI news.</description>
+    <language>en-us</language>
+    <itunes:author>Emma</itunes:author>
+    <item>
+      <title>{title}</title>
+      <description>Your AI brief for {now.strftime('%A, %B %d, %Y')}.</description>
+      <pubDate>{pub_date}</pubDate>
+      <enclosure url="{audio_url}" type="audio/mpeg" length="0"/>
+      <guid>{audio_url}</guid>
+    </item>
+  </channel>
+</rss>
+"""
+    with open("output/podcast.xml", "w") as f:
+        f.write(feed)
+    print("Saved output/podcast.xml")
+
+build_feed("podcast.mp3", f"AI Brief — {date.today().isoformat()}")
+
 
 
 # ========================================
@@ -206,5 +256,5 @@ def build_video(card_files, audio_path, out_path):
         out_path,
     ], check=True)
 
-build_video(card_files, "output/news_podcast.mp3", "output/latest.mp4")
-print("Saved output/news_video.mp4")
+build_video(card_files, "output/podcast.mp3", "output/latest.mp4")
+print("Saved output/video.mp4")
