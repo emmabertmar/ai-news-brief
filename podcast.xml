@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>My AI Daily Brief</title>
+    <link>https://emmabertmar.github.io/ai-news-brief/</link>
+    <description>A daily 4-minute briefing on the latest AI news.</description>
+    <language>en-us</language>
+    <itunes:author>Emma</itunes:author>
+    <item>
+      <title>AI Brief — 2026-06-10</title>
+      <description>Your AI brief for Wednesday, June 10, 2026.</description>
+      <pubDate>Wed, 10 Jun 2026 20:12:27 +0000</pubDate>
+      <enclosure url="https://emmabertmar.github.io/ai-news-brief/podcast.mp3" type="audio/mpeg" length="0"/>
+      <guid>https://emmabertmar.github.io/ai-news-brief/podcast.mp3</guid>
+    </item>
+  </channel>
+</rss>
