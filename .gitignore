@@ -1,0 +1,4 @@
+venv/
+cards/
+output/
+__pycache__/

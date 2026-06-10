@@ -154,16 +154,16 @@ def make_card(path, kicker, headline, footer):
     img.save(path)
 
 # Build one card per story, numbered so ffmpeg can play them in order.
-os.makedirs("pictures", exist_ok=True)   # create the folder (no error if it exists)
+os.makedirs("cards", exist_ok=True)   # create the folder (no error if it exists)
 
 card_files = []
 for i, story in enumerate(stories):
-    filename = f"pictures/card_{i:02d}.png"   # now inside the cards/ folder
+    filename = f"cards/card_{i:02d}.png"   # now inside the cards/ folder
     kicker = f"Story {i + 1} of {len(stories)}"
     make_card(filename, kicker, story["title"], story["source"])
     card_files.append(filename)
 
-print(f"Saved {len(card_files)} cards in pictures/")
+print(f"Saved {len(card_files)} cards in cards/")
 
 
 # ========================================
