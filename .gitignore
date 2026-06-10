@@ -1,4 +1,7 @@
 venv/
-cards/
-output/
 __pycache__/
+output/
+cards/
+*.mp3
+*.mp4
+*.png
