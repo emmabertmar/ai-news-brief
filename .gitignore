@@ -5,3 +5,4 @@ cards/
 *.mp3
 *.mp4
 *.png
+.DS_Store
