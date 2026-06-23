@@ -30,12 +30,4 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
-      - name: Publish episode to Pages
-        run: |
-          cp output/podcast.mp3 podcast.mp3
-          cp output/podcast.xml podcast.xml
-          git config user.name "news-bot"
-          git config user.email "bot@users.noreply.github.com"
-          git add -f podcast.mp3 podcast.xml
-          git commit -m "Publish episode $(date -u +%F)"
-          git push
+      

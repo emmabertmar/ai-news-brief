@@ -258,3 +258,13 @@ def build_video(card_files, audio_path, out_path):
 
 build_video(card_files, "output/podcast.mp3", "output/latest.mp4")
 print("Saved output/video.mp4")
+
+if os.environ.get("GITHUB_ACTIONS") == "true":
+    import shutil
+    shutil.copy("output/podcast.mp3", "podcast.mp3")
+    shutil.copy("output/podcast.xml", "podcast.xml")
+    subprocess.run(["git", "config", "user.name", "news-bot"], check=True)
+    subprocess.run(["git", "config", "user.email", "bot@users.noreply.github.com"], check=True)
+    subprocess.run(["git", "add", "-f", "podcast.mp3", "podcast.xml"], check=True)
+    subprocess.run(["git", "commit", "-m", "Publish episode"], check=True)
+    subprocess.run(["git", "push"], check=True)
