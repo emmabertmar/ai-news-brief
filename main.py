@@ -259,7 +259,7 @@ def build_video(card_files, audio_path, out_path):
 build_video(card_files, "output/podcast.mp3", "output/latest.mp4")
 print("Saved output/video.mp4")
 
-if os.environ.get("GITHUB_ACTIONS") == "true":
+if os.environ.get("GITHUB_ACTIONS") == "true" and os.environ.get("GITHUB_EVENT_NAME") == "schedule":
     import shutil
     shutil.copy("output/podcast.mp3", "podcast.mp3")
     shutil.copy("output/podcast.xml", "podcast.xml")
